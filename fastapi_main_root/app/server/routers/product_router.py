@@ -25,13 +25,13 @@ class Helper:
             detail=f"Invalid Product ID: {product_id}",
         )
 
-    def find_product(self, product_id: str) -> Any:
-        return products_coll.find_one({"_id": ObjectId(product_id)})
+    def find_product(self, product_id: int) -> Any:
+        return products_coll.find_one({"id": product_id})
 
     # def find_product(self, product_name: str) -> Any:
     #     return products_coll.find_one({"name": product_name})
 
-    def validate_product(self, product_id: str) -> bool:
+    def validate_product(self, product_id: int) -> bool:
         found_product = self.find_product(product_id)
         if found_product:
             return True
@@ -65,9 +65,9 @@ async def get_all_products() -> list[dict[str, str]]:
     response_model=GetProduct,
 )
 async def get_post(
-    product_id: str,
+    product_id: int,
 ) -> dict[str, str] | None:
-    helper.validate_id(product_id)
+    # helper.validate_id(product_id)
     if helper.validate_product(product_id):
         product = helper.find_product(product_id)
         return product_serializer(product)
@@ -81,10 +81,10 @@ async def get_post(
     response_model_exclude_none=True,
     status_code=status.HTTP_202_ACCEPTED,
 )
-async def like_product(product_id: str) -> dict[str, str] | None:
+async def like_product(product_id: int) -> dict[str, str] | None:
     if helper.validate_product(product_id):
         products_coll.update_one(
-            {"_id": ObjectId(product_id)},
+            {"id": product_id},
             {"$inc": {"likes": 1}},
         )
         product = product_serializer_noid(helper.find_product(product_id))

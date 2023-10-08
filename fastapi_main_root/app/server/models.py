@@ -13,6 +13,7 @@ from bson.objectid import ObjectId
 
 
 class ProductBase(BaseModel):
+    id: int = Field(...)
     name: str = Field(...)
     image: str = Field(...)
     likes: int = Field(...)

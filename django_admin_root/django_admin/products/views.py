@@ -35,9 +35,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def delete_product(self, request, product_id=None):
+        publish("product_deleted", product_id)
         product = Product.objects.get(id=product_id)
         product.delete()
-        publish("product_deleted", product_id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_product(self, request, product_id=None):

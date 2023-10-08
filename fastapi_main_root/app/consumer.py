@@ -7,17 +7,23 @@ from server.serializers.product_serializer import product_serializer_noid
 def on_msg_recv(ch, method, properties, body):
     print(f"FastAPI Consumer - Received A New Message!")
     data = json.loads(body)
+    print("BRUHHHHHH idddddd", data)
 
     if properties.content_type == "product_created":
         ser_data = product_serializer_noid(data)
         products_coll.insert_one(ser_data)
-        print("Product Created")
+        print("FastAPI Consumer - Created A Product!")
 
     elif properties.content_type == "product_updated":
-        print("Product Updated")
+        ser_data = product_serializer_noid(data)
+        products_coll.update_one(
+            {"id": data["id"]}, {"$set": ser_data}, upsert=True
+        )
+        print("FastAPI Consumer - Updated A Product!")
 
     elif properties.content_type == "product_deleted":
-        print("Product Deleted")
+        products_coll.delete_one({"id": data})
+        print("FastAPI Consumer - Deleted A Product!")
 
 
 conn_params = pika.URLParameters(

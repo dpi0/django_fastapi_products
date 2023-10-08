@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 6969:6969
+    volumes:
+      - ./app:/fastapi_main_root/app
+    environment:
+      - ATLAS_CLUSTER_USERNAME=dp
+      - ATLAS_CLUSTER_PASSWORD=ZrhXY3wvPqYoszrb
+      - CLUSTER_DB_NAME=fastapi_main_microservice
+      - PRDUCTS_COLLECTION_NAME=products
+      - ATLAS_URI=mongodb+srv://dp:ZrhXY3wvPqYoszrb@cluster0.9wuzbib.mongodb.net/?retryWrites=true&w=majority
+    command: "python app/run.py"
+
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app/consumer.py:/fastapi_main_root/app/consumer.py
+    environment:
+      - ATLAS_CLUSTER_USERNAME=dp
+      - ATLAS_CLUSTER_PASSWORD=ZrhXY3wvPqYoszrb
+      - CLUSTER_DB_NAME=fastapi_main_microservice
+      - PRDUCTS_COLLECTION_NAME=products
+      - ATLAS_URI=mongodb+srv://dp:ZrhXY3wvPqYoszrb@cluster0.9wuzbib.mongodb.net/?retryWrites=true&w=majority
+    command: 'python app/consumer.py'

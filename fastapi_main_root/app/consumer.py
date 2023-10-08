@@ -44,4 +44,4 @@ channel.basic_consume(
 
 print("FastAPI Consumer - Started Consuming...")
 channel.start_consuming()
-channel.close()
+# channel.close()

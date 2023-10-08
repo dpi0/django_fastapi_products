@@ -1,13 +1,10 @@
 import pika, json, os, django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "admin.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_admin.settings")
 django.setup()
 
 
-# from products.serializers import ProductSerializer
 from products.models import Product
-
-# from products.views import ProductViewSet
 
 
 def on_msg_recv(ch, method, properties, body):
@@ -15,8 +12,6 @@ def on_msg_recv(ch, method, properties, body):
     data = json.loads(body)
 
     if properties.content_type == "liked_product":
-        # ser_data = product_serializer(data)
-        # collection.insert_one(ser_data)
         print("Django Consumer - RECIEVED A Product!")
         print(data)
         print(data["id"])
